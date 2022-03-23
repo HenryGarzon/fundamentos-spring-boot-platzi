@@ -70,10 +70,35 @@ public class FundamentosApplication implements CommandLineRunner {
 
         userRepository.findByName1("Henry")
                 .stream()
-                .forEach(user -> LOGGER.info("Usuario conquery method " + user));
+                .forEach(user -> LOGGER.info("Usuario con query method findByName1 " + user));
 
         LOGGER.info("Usuario con Query Method findByEmailAndName1" + userRepository.findByEmailAndName1("Eva@gmail1.com","Eva")
                 .orElseThrow(()->new RuntimeException("No se encontró el usuario ")));
+
+        userRepository.findByName1Like("%u%")
+                .stream()
+                .forEach(user -> LOGGER.info("Usuario con findByName1Like  " + user));
+
+        userRepository.findByName1OrEmail(null,"user4@gmail1.com")
+                .stream()
+                .forEach(user -> LOGGER.info("Usuario con findByName1Like  " + user));
+
+        userRepository.findByName1OrEmail("Eva",null)
+                .stream()
+                .forEach(user -> LOGGER.info("Usuario con findByName1Like  " + user));
+
+        userRepository.findByBirdDateBetween(LocalDate.of(2022,06,01),LocalDate.of(2022,06,30))
+                .stream()
+                .forEach(user -> LOGGER.info("Usuario con intervalo de fechas:    " + user));
+
+
+        userRepository.findByName1LikeOrderByIdDesc("%user%")
+                .stream()
+                .forEach(user -> LOGGER.info("Usuario con like y ordenado findByName1LikeOrderByIdDesc  " + user));
+
+        userRepository.findByName1ContainingOrderByIdDesc("user")
+                .stream()
+                .forEach(user -> LOGGER.info("Usuario con like y ordenado findByName1ContainingOrderByIdDesc  " + user));
 
     }
 
