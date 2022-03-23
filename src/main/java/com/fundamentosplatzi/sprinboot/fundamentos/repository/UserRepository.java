@@ -1,10 +1,11 @@
 package com.fundamentosplatzi.sprinboot.fundamentos.repository;
 
 import com.fundamentosplatzi.sprinboot.fundamentos.entity.User;
-import org.springframework.data.domain.Example;
+import com.fundamentosplatzi.sprinboot.fundamentos.dto.UserDto;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -33,5 +34,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByName1LikeOrderByIdDesc(String name1);
 
     List<User> findByName1ContainingOrderByIdDesc(String name1);
+
+    @Query("Select new com.fundamentosplatzi.sprinboot.fundamentos.dto.UserDto(u.id, u.name1, u.birdDate)" +
+        " from User u " +
+        " where u.birdDate=:parametroFecha " +
+        " and u.email=:parametroEmail "
+    )
+    Optional<UserDto> getAllByBirdDateAndEmail(@Param("parametroFecha") LocalDate date,
+                                               @Param("parametroEmail") String email);
 
 }

@@ -59,6 +59,7 @@ public class FundamentosApplication implements CommandLineRunner {
     }
 
     private void getInformationJpqlFromUser(){
+
         LOGGER.info("Usuario con el método findByUserEmail  :  " +
                 userRepository.findByUserEmail("halgarjr@gmail.com")
                 .orElseThrow(()->new RuntimeException("No se encontró el usuario ")));
@@ -99,6 +100,11 @@ public class FundamentosApplication implements CommandLineRunner {
         userRepository.findByName1ContainingOrderByIdDesc("user")
                 .stream()
                 .forEach(user -> LOGGER.info("Usuario con like y ordenado findByName1ContainingOrderByIdDesc  " + user));
+
+
+        LOGGER.info("El usuario  a partir del named parameter es:  " +
+                userRepository.getAllByBirdDateAndEmail(LocalDate.of(2022, 8, 01),"user3@gmail1.com")
+                .orElseThrow(()->new RuntimeException("No se encontró el usuario a partir del named parameter ")));
 
     }
 
