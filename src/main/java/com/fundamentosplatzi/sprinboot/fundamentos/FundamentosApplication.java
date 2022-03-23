@@ -5,6 +5,7 @@ import com.fundamentosplatzi.sprinboot.fundamentos.bean.*;
 import com.fundamentosplatzi.sprinboot.fundamentos.entity.User;
 import com.fundamentosplatzi.sprinboot.fundamentos.pojo.UserPojo;
 import com.fundamentosplatzi.sprinboot.fundamentos.repository.UserRepository;
+import com.fundamentosplatzi.sprinboot.fundamentos.service.UserService;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +32,11 @@ public class FundamentosApplication implements CommandLineRunner {
     private MyBeanWhitProperties myBeanWhitProperties;
     private UserPojo userPojo;
     private UserRepository userRepository;
+    private UserService userService;
 
 
     //public FundamentosApplication(@Qualifier("componentImplement") ComponentDependency componentDependency){
-    public FundamentosApplication(@Qualifier("componentTwoImplement") ComponentDependency componentDependency, MyBean myBean, MyBeanWithDependency myBeanWithDependency, BeanMiAsignatura beanMiAsignatura, MyBeanWhitProperties myBeanWhitProperties, UserPojo userPojo, UserRepository userRepository) {
+    public FundamentosApplication(@Qualifier("componentTwoImplement") ComponentDependency componentDependency, MyBean myBean, MyBeanWithDependency myBeanWithDependency, BeanMiAsignatura beanMiAsignatura, MyBeanWhitProperties myBeanWhitProperties, UserPojo userPojo, UserRepository userRepository, UserService userService) {
         this.componentDependency = componentDependency;
         this.myBean = myBean;
         this.myBeanWithDependency = myBeanWithDependency;
@@ -42,6 +44,7 @@ public class FundamentosApplication implements CommandLineRunner {
         this.myBeanWhitProperties = myBeanWhitProperties;
         this.userPojo = userPojo;
         this.userRepository = userRepository;
+        this.userService=userService;
     }
 
     public static void main(String[] args) {
@@ -55,6 +58,8 @@ public class FundamentosApplication implements CommandLineRunner {
 //        ejemplosAnteriores();
         saveUsersInDataBase();
         getInformationJpqlFromUser();
+        saveWithErrorTransactional();
+
 
     }
 
@@ -126,6 +131,24 @@ public class FundamentosApplication implements CommandLineRunner {
 
         List<User> list = Arrays.asList(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11, user12);
         list.stream().forEach(userRepository::save);
+    }
+
+    private void saveWithErrorTransactional() {
+        User test1=new User("test1Transactional1", "TestTransactional1.com", LocalDate.of(2022, 03, 22));
+        User test2 = new User("test2Transactional2", "Test2Transactional2@domain.com", LocalDate.of(2022, 03, 30));
+        User test3 = new User("test3Transactional3", "Test3Transactional3.com", LocalDate.of(2022, 8, 01));
+        User test4 = new User("test4Transactional4", "Test4Transactional4@domain.com", LocalDate.of(2022, 11, 13));
+
+
+
+        List<User> users = Arrays.asList(test1, test2, test3, test4);
+
+        userService.saveTransactional(users);
+
+        userService.getAllUsers().stream()
+                .forEach(user -> LOGGER.info("Este es el usuario dentro del método transaccional "+ user));
+
+//        list.stream().forEach(userRepository::save);
     }
 
     private void ejemplosAnteriores() {

@@ -19,7 +19,7 @@ public class User {
     @Column(length = 50)
     private String name1;
 
-    @Column(length = 50)
+    @Column(length = 50, unique = true)
     private String email;
 
     private LocalDate birdDate;
