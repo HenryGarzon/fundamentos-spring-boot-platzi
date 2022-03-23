@@ -44,7 +44,7 @@ public class FundamentosApplication implements CommandLineRunner {
         this.myBeanWhitProperties = myBeanWhitProperties;
         this.userPojo = userPojo;
         this.userRepository = userRepository;
-        this.userService=userService;
+        this.userService = userService;
     }
 
     public static void main(String[] args) {
@@ -63,11 +63,11 @@ public class FundamentosApplication implements CommandLineRunner {
 
     }
 
-    private void getInformationJpqlFromUser(){
+    private void getInformationJpqlFromUser() {
 
         LOGGER.info("Usuario con el método findByUserEmail  :  " +
                 userRepository.findByUserEmail("halgarjr@gmail.com")
-                .orElseThrow(()->new RuntimeException("No se encontró el usuario ")));
+                        .orElseThrow(() -> new RuntimeException("No se encontró el usuario ")));
 
 
         userRepository.findAndSort("user", Sort.by("id").descending())
@@ -78,22 +78,22 @@ public class FundamentosApplication implements CommandLineRunner {
                 .stream()
                 .forEach(user -> LOGGER.info("Usuario con query method findByName1 " + user));
 
-        LOGGER.info("Usuario con Query Method findByEmailAndName1" + userRepository.findByEmailAndName1("Eva@gmail1.com","Eva")
-                .orElseThrow(()->new RuntimeException("No se encontró el usuario ")));
+        LOGGER.info("Usuario con Query Method findByEmailAndName1" + userRepository.findByEmailAndName1("Eva@gmail1.com", "Eva")
+                .orElseThrow(() -> new RuntimeException("No se encontró el usuario ")));
 
         userRepository.findByName1Like("%u%")
                 .stream()
                 .forEach(user -> LOGGER.info("Usuario con findByName1Like  " + user));
 
-        userRepository.findByName1OrEmail(null,"user4@gmail1.com")
+        userRepository.findByName1OrEmail(null, "user4@gmail1.com")
                 .stream()
                 .forEach(user -> LOGGER.info("Usuario con findByName1Like  " + user));
 
-        userRepository.findByName1OrEmail("Eva",null)
+        userRepository.findByName1OrEmail("Eva", null)
                 .stream()
                 .forEach(user -> LOGGER.info("Usuario con findByName1Like  " + user));
 
-        userRepository.findByBirdDateBetween(LocalDate.of(2022,06,01),LocalDate.of(2022,06,30))
+        userRepository.findByBirdDateBetween(LocalDate.of(2022, 06, 01), LocalDate.of(2022, 06, 30))
                 .stream()
                 .forEach(user -> LOGGER.info("Usuario con intervalo de fechas:    " + user));
 
@@ -108,15 +108,14 @@ public class FundamentosApplication implements CommandLineRunner {
 
 
         LOGGER.info("El usuario  a partir del named parameter es:  " +
-                userRepository.getAllByBirdDateAndEmail(LocalDate.of(2022, 8, 01),"user3@gmail1.com")
-                .orElseThrow(()->new RuntimeException("No se encontró el usuario a partir del named parameter ")));
+                userRepository.getAllByBirdDateAndEmail(LocalDate.of(2022, 8, 01), "user3@gmail1.com")
+                        .orElseThrow(() -> new RuntimeException("No se encontró el usuario a partir del named parameter ")));
 
     }
 
 
-
     private void saveUsersInDataBase() {
-        User user1=new User("Henry", "halgarjr@gmail.com", LocalDate.of(2022, 03, 22));
+        User user1 = new User("Henry", "halgarjr@gmail.com", LocalDate.of(2022, 03, 22));
         User user2 = new User("Eva", "Eva@gmail1.com", LocalDate.of(2022, 03, 30));
         User user3 = new User("user3", "user3@gmail1.com", LocalDate.of(2022, 8, 01));
         User user4 = new User("user4", "user4@gmail1.com", LocalDate.of(2022, 11, 13));
@@ -134,19 +133,26 @@ public class FundamentosApplication implements CommandLineRunner {
     }
 
     private void saveWithErrorTransactional() {
-        User test1=new User("test1Transactional1", "TestTransactional1.com", LocalDate.of(2022, 03, 22));
+        User test1 = new User("test1Transactional1", "TestTransactional1.com", LocalDate.of(2022, 03, 22));
         User test2 = new User("test2Transactional2", "Test2Transactional2@domain.com", LocalDate.of(2022, 03, 30));
-        User test3 = new User("test3Transactional3", "Test3Transactional3.com", LocalDate.of(2022, 8, 01));
+        //Se registra un correo ya existente, para efectos de notar el rollback y las ventajas de la notación @Transactional colocada en la clase UserService
+        User test3 = new User("test3Transactional3", "TestTransactional1.com", LocalDate.of(2022, 8, 01));
         User test4 = new User("test4Transactional4", "Test4Transactional4@domain.com", LocalDate.of(2022, 11, 13));
-
-
 
         List<User> users = Arrays.asList(test1, test2, test3, test4);
 
-        userService.saveTransactional(users);
+        try {
+            userService.saveTransactional(users);
+
+        } catch (Exception e) {
+
+            LOGGER.error("Esta es una excepción dentro del métdod transsaccional  " + e);
+
+        }
+
 
         userService.getAllUsers().stream()
-                .forEach(user -> LOGGER.info("Este es el usuario dentro del método transaccional "+ user));
+                .forEach(user -> LOGGER.info("Este es el usuario dentro del método transaccional " + user));
 
 //        list.stream().forEach(userRepository::save);
     }
