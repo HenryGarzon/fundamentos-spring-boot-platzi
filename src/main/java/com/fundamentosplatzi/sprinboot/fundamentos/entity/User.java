@@ -17,7 +17,7 @@ public class User {
     private Long id;
 
     @Column(length = 50)
-    private String name;
+    private String name1;
 
     @Column(length = 50)
     private String email;
@@ -29,14 +29,14 @@ public class User {
     private List<Post>  posts =new ArrayList<>();
 
     public User() {
-
     }
 
-    public User(String name, String email, LocalDate birdDate, List<Post> posts) {
-        this.name = name;
-        this.email = email;
-        this.birdDate = birdDate;
-        this.posts = posts;
+
+
+    public User(String name1, String email, LocalDate birdDate) {
+        this.name1=name1;
+        this.email=email;
+        this.birdDate=birdDate;
     }
 
     public Long getId() {
@@ -47,12 +47,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getName1() {
+        return name1;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName1(String name1) {
+        this.name1 = name1;
     }
 
     public String getEmail() {
@@ -83,7 +83,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name1='" + name1 + '\'' +
                 ", email='" + email + '\'' +
                 ", birdDate=" + birdDate +
                 ", posts=" + posts +
